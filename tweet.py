@@ -129,7 +129,7 @@ def run(temp,umid):
 
     # time_diff = -3 * 3600                                        # Time difference
 
-    import time
+    # import time
     import ntptime
 
     while True:
@@ -165,4 +165,8 @@ def send():
     s.write(f)
     # print(s.read(4096))
     s.close()
-    # rm_tweet_txt()
+    rm_tweet_txt()
+
+def rm_tweet_txt():
+    import os
+    os.remove('tweet.txt')

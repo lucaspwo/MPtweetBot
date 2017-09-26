@@ -8,6 +8,7 @@ def run():
     # np.write()
     TIME = time.time()
     FLAG = False
+    FLAG2 = False
     global RESET
     RESET = False
 
@@ -39,15 +40,6 @@ def run():
     def cb(change):
         global RESET
         RESET = True
-        # print(RESET)
-        # config = ['wifi', 'senha', '10', '10']
-        # data['campos'] = config                 # escrita do vetor na biblioteca
-        # dataIn = json.dumps(data)               # passando a biblioteca para json
-        # f = open('config.txt', 'w')             # abrindo o arquivo de configuracoes
-        # f.write(dataIn)                         # escrevendo o json
-        # f.close()                               # fechando o arquivo
-        # import machine
-        # machine.reset()
 
     btn.irq(trigger= machine.Pin.IRQ_FALLING, handler=cb)
 
@@ -62,15 +54,21 @@ def run():
                 cl, addr = s.accept()
                 FLAG = True
             except:
+                if FLAG2 == True:
+                    machine.reset()
                 if RESET == True:
-                    print('foi')
                     config2 = ['wifi', 'senha', '10', '10']
                     data['campos'] = config2                 # escrita do vetor na biblioteca
                     dataIn = json.dumps(data)               # passando a biblioteca para json
                     f = open('config.txt', 'w')             # abrindo o arquivo de configuracoes
+                    time.sleep(1)
                     f.write(dataIn)                         # escrevendo o json
+                    time.sleep(1)
                     f.close()                               # fechando o arquivo
-                    machine.reset()
+                    time.sleep(2)
+                    RESET = False
+                    FLAG2 = True
+                    # machine.reset()
 
                 if time.time() - TIME >= int(config[2]):    # trinta segundos
                     neo.run(0,31,0)

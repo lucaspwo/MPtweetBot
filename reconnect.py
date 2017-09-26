@@ -1,7 +1,7 @@
 count = 0                               # contador para ativar o modo de configuracao
 
 def connect():
-    import network, json, utime
+    import network, json, utime, neo
 
     ap = network.WLAN(network.AP_IF)# criacao do objeto ap
     ap.active(False)                 # ativacao da rede ap
@@ -15,16 +15,19 @@ def connect():
     wlan.connect(config[0], config[1])      # instrucao de conexao ao wifi armazenado (ssid, senha)
 
     while not wlan.isconnected():           # enquanto nao estiver conectado
-        utime.sleep(1)                      # espere 1 segundo
+        neo.run(0,0,0)
+        utime.sleep(0.5)                      # espere 1 segundo
         global count
         count = count +1                    # incremente o contador em 1
+        neo.run(63,31,0)
+        utime.sleep(0.5)
         if(count == 9):                    # se passarem 10 segundos sem conexao, iniciar a reconfiguracao
+            neo.run(31,0,31)
             init()
 
 def init():
-    import network, ubinascii, json, loadConfig, utime, gc
+    import network, ubinascii, json, loadConfig, utime, machine
 
-    gc.collect()
     wlan = network.WLAN(network.STA_IF)     # criacao do objeto wlan
     wlan.active(False)              # desativacao do wlan infraestrutura
     ssid=str(ubinascii.hexlify(wlan.config('mac')))[8:-1]   # recuperacao o endereco mac, converter para hexadecimal, converter para string e manter apenas os ultimos caracteres
@@ -41,3 +44,4 @@ def init():
     wlan.connect(config2[0], config2[1])    # instrucao de conexao na nova rede wifi
     global count
     count = 0                       # reiniciar o contador, dando mais 10 segundos para conectar, antes de reiniciar o processo
+    machine.reset()
