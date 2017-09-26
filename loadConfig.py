@@ -4,6 +4,7 @@ def config():
     val1 = ''
     val2 = ''
     val3 = ''
+    val4 = ''
 
     flag = False
 
@@ -24,7 +25,8 @@ def config():
         request = str(request)
         ssid = request.find('ssid=')            # procurando pela string no retorno em string
         senha = request.find('senha=')          # retorna um inteiro, representando a posicao do
-        ip = request.find('ip=')                #primeiro caractere da string procurada
+        freq = request.find('freq=')                #primeiro caractere da string procurada
+        porc = request.find('porc=')
         # print(ssid)
         # print(usuar)
         if(ssid > 0 and ssid < 50):             # se a posicao for entre 0 e 50 (-1 e nao encontrado)
@@ -51,28 +53,46 @@ def config():
                         break
                 cont = cont + 1
             val2 = str2
-        if(ip > 0 and ip < 50):                 # busca do ip
+        if(freq > 0 and freq < 50):                 # busca do ip
             str3 = ''
             cont = 0
-            beg = ip+3
+            beg = freq+5
             for i in request:
                 if cont >= beg:
-                    if i != '\\' and i != ' ':
+                    if i != '&':
                         str3 = str3 + i
-                    if i == '\\' or i == ' ':
+                    if i == '&':
                         break
                 cont = cont + 1
             val3 = str3
+        if(porc > 0 and porc < 50):           # busca da senha do wifi
+            str4 = ''
+            cont = 0
+            beg = porc+5
+            for i in request:
+                if cont >= beg:
+                    if i != '\\' and i != ' ':
+                        str4 = str4 + i
+                    if i == '\\' or i == ' ':
+                        break
+                cont = cont + 1
+            val4 = str4
         if val1 != '':                          # a impressao dos valores obtidos no formulario
             print('val1: ' + val1)              #junto com o armazenamento no vetor
             config[0] = val1
+            flag = True
         if val2 != '':
             print('val2: ' + val2)
             config[1] = val2
+            flag = True
         if val3 != '':
             print('val3: ' + val3)
             config[2] = val3
             flag = True                         # com a ultima variavel tendo sido modificada, mudar o valor da flag de controle
+        if val4 != '':
+            print('val4: ' + val4)
+            config[3] = val4
+            flag = True
         data['campos'] = config                 # escrita do vetor na biblioteca
         dataIn = json.dumps(data)               # passando a biblioteca para json
         f = open('config.txt', 'w')             # abrindo o arquivo de configuracoes
