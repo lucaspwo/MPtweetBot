@@ -9,6 +9,8 @@ def run():
     TIME = time.time()
     FLAG = False
     FLAG2 = False
+    global tmp
+    global umi
     global RESET
     RESET = False
 
@@ -27,7 +29,10 @@ def run():
 # </html>
 # """
 
-    d = dht.DHT11(machine.Pin(5))
+    d = dht.DHT22(machine.Pin(5))
+    d.measure()
+    tmp = d.temperature()
+    umi = d.humidity()
 
     import socket
     addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
@@ -57,6 +62,7 @@ def run():
                 if FLAG2 == True:
                     machine.reset()
                 if RESET == True:
+                    neo.run(63,63,63)
                     config2 = ['wifi', 'senha', '10', '10']
                     data['campos'] = config2                 # escrita do vetor na biblioteca
                     dataIn = json.dumps(data)               # passando a biblioteca para json
@@ -75,28 +81,34 @@ def run():
                     # np[0] = (0,31,0)     # verde
                     # np.write()
                     d.measure()
-                    print ('Temp: %dºC' % d.temperature())
-                    print ('Umid: %d%%' % d.humidity())
-                    if d.humidity() >= int(config[3]):
+                    global tmp
+                    global umi
+                    tmp = d.temperature()
+                    umi = d.humidity()
+                    print ('Temp: % 0.1fºC' % tmp)
+                    print ('Umid: %d%%' % umi)
+                    if umi >= int(config[3]):
                         neo.run(63,0,0)
                         import tweet
-                        tweet.run(d.temperature(),d.humidity())
+                        tweet.run(tmp,umi)
                         # tweet.send()
                     TIME = time.time()
             if FLAG == True:
                 neo.run(0,0,63)
+                global tmp
+                global umi
                 # np[0] = (0,0,63)     # azul
                 # np.write()
-                TIME = time.time()
+                # TIME = time.time()
                 FLAG = False
                 print('client connected from', addr)
                 cl_file = cl.makefile('rwb', 0)
                 while True:
-                    d.measure()
+                    # d.measure()
                     line = cl_file.readline()
                     if not line or line == b'\r\n':
                         break
-                rows = ['<tr><td>%d</td><td>%d</td></tr>' % (d.humidity(), d.temperature())]
+                rows = ['<tr><td>%d</td><td>% 0.1f</td></tr>' % (umi, tmp)]
                 response = html % '\n'.join(rows)
                 cl.send(response)
                 cl.close()
