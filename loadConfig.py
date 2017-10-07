@@ -1,5 +1,5 @@
 def config():
-    import socket, json
+    import socket, json, time
 
     val1 = ''
     val2 = ''
@@ -13,6 +13,7 @@ def config():
     config = data['campos']
 
     html = open('webConfig.html').read()        # abertura do arquivo com a pagina de configuracao
+    sucesso = open('sucesso.html').read()
 
     addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
     s = socket.socket()
@@ -102,8 +103,9 @@ def config():
             f = open('config.txt', 'w')             # abrindo o arquivo de configuracoes
             f.write(dataIn)                         # escrevendo o json
             f.close()                               # fechando o arquivo
-            response = html                         # enviando de volta a pagina de configuracoes
+            response = sucesso                         # enviando de volta a pagina de configuracoes
             conn.send(response)                     # NOTA: alterar para uma pagina de sucesso
             conn.close()                            # fechando a conexao
+            time.sleep(5)
     finally:
         s.close()                                   # fechando o socket de comunicacao

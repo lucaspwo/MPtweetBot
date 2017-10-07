@@ -1,5 +1,5 @@
 def run():
-    import machine, dht, time, json, neo
+    import machine, dht, time, json, neo, network
     # pins = [machine.Pin(i, machine.Pin.IN) for i in (0, 2, 4, 5, 12, 13, 14, 15)]
 
     btn = machine.Pin(14, machine.Pin.IN)
@@ -13,6 +13,8 @@ def run():
     global umi
     global RESET
     RESET = False
+
+    wlan = network.WLAN(network.STA_IF)
 
     preJson = open('config.txt').read()         # abertura do arquivo de configuracoes
     data = json.loads(preJson)
@@ -63,18 +65,23 @@ def run():
                     machine.reset()
                 if RESET == True:
                     neo.run(63,63,63)
-                    config2 = ['wifi', 'senha', '10', '10']
-                    data['campos'] = config2                 # escrita do vetor na biblioteca
-                    dataIn = json.dumps(data)               # passando a biblioteca para json
-                    f = open('config.txt', 'w')             # abrindo o arquivo de configuracoes
-                    time.sleep(1)
-                    f.write(dataIn)                         # escrevendo o json
-                    time.sleep(1)
-                    f.close()                               # fechando o arquivo
+                    # config2 = ['wifi', 'senha', '10', '10']
+                    # data['campos'] = config2                 # escrita do vetor na biblioteca
+                    # dataIn = json.dumps(data)               # passando a biblioteca para json
+                    # f = open('config.txt', 'w')             # abrindo o arquivo de configuracoes
+                    # time.sleep(1)
+                    # f.write(dataIn)                         # escrevendo o json
+                    # time.sleep(1)
+                    # f.close()                               # fechando o arquivo
+                    import reconnect
+                    reconnect.init()
                     time.sleep(2)
                     RESET = False
                     FLAG2 = True
                     # machine.reset()
+                if wlan.isconnected() == False:
+                    import reconnect
+                    reconnect.connect
 
                 if time.time() - TIME >= int(config[2]):    # trinta segundos
                     neo.run(0,31,0)
