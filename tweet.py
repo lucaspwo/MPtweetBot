@@ -122,10 +122,10 @@ def run(temp,umid):
     global CS
     global AT
     global AS
-    CK = 'gI1n0GzTcX0R45JrhtlHX0hbE'     # CONSUMER_KEY
-    CS = 'tsVkeSOld0E5pXevGYdiOLSB4VsUHKKsxsjzHKgeM39HhiKhIZ'     # CONSUMER_SECRET
-    AT = '31201720-x9NSSP36E1e8eZRz0bsdI5by9pm94E00E11NUXvY1'     # ACCESS_KEY
-    AS = 'zojx7oNunlDe3gtJsDMzDwREdmTBRLcu9tgQoFzdbFImu'     # ACCESS_SECRET
+    CK = ''     # CONSUMER_KEY
+    CS = ''     # CONSUMER_SECRET
+    AT = ''     # ACCESS_KEY
+    AS = ''     # ACCESS_SECRET
 
     # time_diff = -3 * 3600                                        # Time difference
 
